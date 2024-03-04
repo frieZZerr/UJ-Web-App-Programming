@@ -1,0 +1,25 @@
+{
+  "name": "project-1",
+  "version": "1.0.0",
+  "description": "Item rent application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/frieZZerr/UJ-Web-App-Programming.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "express": "^4.18.3",
+    "sequelize": "^6.37.2",
+    "sqlite3": "^5.1.7"
+  }
+}
