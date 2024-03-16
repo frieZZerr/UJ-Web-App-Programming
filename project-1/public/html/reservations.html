@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Reservation System - Reservations</title>
+</head>
+<body>
+    <nav>
+        <button onclick="window.location.href = '/'">Homepage</button>
+        <button onclick="window.location.href = '/reservations'">Reservations</button>
+    </nav>
+    <h1>Item Reservation System</h1>
+    <div id="content-placeholder">
+        <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <script>
+        function cancelReservation(reservationId) {
+            // Send a POST request to cancel the reservation
+            fetch(`/cancel-reservation/${reservationId}`, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log(data);
+                alert('Reservation cancelled successfully!');
+                // Reload the page to update the list of reservations
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('There was a problem cancelling the reservation:', error.message);
+                alert('Failed to cancel reservation. Please try again later.');
+            });
+        }
+    </script>
+</body>
+</html>
