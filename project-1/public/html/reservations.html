@@ -4,22 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Reservation System - Reservations</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
 </head>
 <body>
     <nav>
-        <button onclick="window.location.href = '/'">Homepage</button>
-        <button onclick="window.location.href = '/reservations'">Reservations</button>
+        <h1>IteMate</h1>
+        <div class="nav-buttons">
+            <button onclick="window.location.href = '/'">Homepage</button>
+            <button onclick="window.location.href = '/reservations'">Reservations</button>
+        </div>
     </nav>
-    <h1>Item Reservation System</h1>
     <div id="content-placeholder">
         <!-- Content will be dynamically inserted here -->
     </div>
 
     <script>
         function cancelReservation(reservationId) {
+        const uniqueReservationId = prompt("Please enter the unique reservation ID:");
+        if (uniqueReservationId !== null && uniqueReservationId !== "") {
             // Send a POST request to cancel the reservation
             fetch(`/cancel-reservation/${reservationId}`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ uniqueReservationId: uniqueReservationId })
             })
             .then(response => {
                 if (response.ok) {
@@ -35,9 +45,13 @@
             })
             .catch(error => {
                 console.error('There was a problem cancelling the reservation:', error.message);
-                alert('Failed to cancel reservation. Please try again later.');
+                alert('Failed to cancel reservation.\nMake sure that the reservation cancel ID is correct.');
             });
         }
+    }
     </script>
 </body>
+<footer>
+    <p>&copy; 2024 IteMate - friezzerr</p>
+</footer>
 </html>

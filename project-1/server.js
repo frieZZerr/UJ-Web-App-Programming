@@ -1,6 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const fs      = require('fs');
+const path    = require('path');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -71,6 +72,7 @@ const db = new sqlite3.Database('./db/database.db', sqlite3.OPEN_READWRITE | sql
 // Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.get('/', (req, res) => {
@@ -89,13 +91,16 @@ app.get('/', (req, res) => {
                   // Replace the content placeholder with the list of available items
                   const modifiedHTML = data.replace('<!-- Content will be dynamically inserted here -->', 
                       `<h2>List of Available Items</h2>
-                      <ul>
-                          ${rows.map(row => `
-                              <li>${row.name} - ${row.location} 
-                                  <button onclick="reserveItem(${row.id})">Reserve</button>
-                              </li>
-                          `).join('')}
-                      </ul>`
+                      <div class="item-list">
+                        <ul>
+                            ${rows.map(row => `
+                                <li>
+                                    <strong>${row.name}</strong> <span class="item-location">${row.location}</span> 
+                                    <button onclick="reserveItem(${row.id})">Reserve</button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>`
                   );
                   res.send(modifiedHTML);
               }
@@ -170,13 +175,15 @@ app.get('/reservations', (req, res) => {
                   // Replace the content placeholder with the list of reservations
                   const modifiedHTML = data.replace('<!-- Content will be dynamically inserted here -->',
                       `<h2>List of Reservations</h2>
-                      <ul>
-                          ${rows.map(row => `
-                              <li>${row.item_name} - ${row.item_location} - ${row.user_name} - ${row.reservation_date}
-                                  <button onclick="cancelReservation(${row.id})">Cancel Reservation</button>
-                              </li>
-                          `).join('')}
-                      </ul>`
+                      <div class="item-list">
+                        <ul>
+                            ${rows.map(row => `
+                                <li><strong>${row.item_name}</strong> <span class="item-location">${row.item_location}</span> ${row.user_name} - ${row.reservation_date}
+                                    <button onclick="cancelReservation(${row.id})">Cancel Reservation</button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                      </div>`
                   );
                   res.send(modifiedHTML);
               }
@@ -186,36 +193,39 @@ app.get('/reservations', (req, res) => {
 });
 
 app.post('/cancel-reservation/:id', (req, res) => {
-  const reservationId = req.params.id;
-  
-  // Retrieve item ID from the 'reservations' table
-  db.get("SELECT item_id FROM reservations WHERE id = ?", [reservationId], (err, row) => {
-      if (err) {
-          console.error('Error retrieving item details:', err.message);
-          res.status(500).send('Internal Server Error');
-      } else if (!row) {
-          res.status(404).send('Reservation not found');
-      } else {
-          const itemId = row.item_id;
-          // Delete the reservation from the 'reservations' table
-          db.run("DELETE FROM reservations WHERE id = ?", [reservationId], (err) => {
-              if (err) {
-                  console.error('Error cancelling reservation:', err.message);
-                  res.status(500).send('Internal Server Error');
-              } else {
-                  // Update availability status of the item in the 'items' table
-                  db.run("UPDATE items SET available = 1 WHERE id = ?", [itemId], (err) => {
-                      if (err) {
-                          console.error('Error updating availability status of item:', err.message);
-                          res.status(500).send('Internal Server Error');
-                      } else {
-                          res.json({ success: true });
-                      }
-                  });
-              }
-          });
-      }
-  });
+    const reservationId = req.params.id;
+    const uniqueReservationId = req.body.uniqueReservationId; // Assuming uniqueReservationId is sent in the request body
+    
+    // Retrieve item ID from the 'reservations' table based on the reservation ID
+    db.get("SELECT item_id, reservation_unique_id FROM reservations WHERE id = ?", [reservationId], (err, row) => {
+        if (err) {
+            console.error('Error retrieving reservation details:', err.message);
+            res.status(500).send('Internal Server Error');
+        } else if (!row) {
+            res.status(404).send('Reservation not found');
+        } else if (row.reservation_unique_id !== uniqueReservationId) {
+            res.status(403).send('Unique reservation ID does not match');
+        } else {
+            const itemId = row.item_id;
+            // Delete the reservation from the 'reservations' table
+            db.run("DELETE FROM reservations WHERE id = ?", [reservationId], (err) => {
+                if (err) {
+                    console.error('Error cancelling reservation:', err.message);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    // Update availability status of the item in the 'items' table
+                    db.run("UPDATE items SET available = 1 WHERE id = ?", [itemId], (err) => {
+                        if (err) {
+                            console.error('Error updating availability status of item:', err.message);
+                            res.status(500).send('Internal Server Error');
+                        } else {
+                            res.json({ success: true });
+                        }
+                    });
+                }
+            });
+        }
+    });
 });
 
 // Start server
