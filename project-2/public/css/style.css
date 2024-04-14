@@ -46,15 +46,11 @@ li {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #28a745;
+    color: #fff;
     border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -85,4 +81,80 @@ footer {
     left: 0;
     bottom: 0;
     width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+#item-name-placeholder {
+    text-align: center;
+    font-weight: bold;
+    height: 50px;
+    margin-bottom: 20px;
+}
+
+.cancel-button {
+    background-color: red;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: darkred;
+}
+
+.item-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.item-list th, .item-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.item-list th {
+    background-color: #f2f2f2;
+}
+
+.item-list tr:hover {
+    background-color: #f2f2f2;
+}
+
+.item-list {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.reserve-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.reserve-button:hover {
+    background-color: #218838;
 }
