@@ -186,6 +186,12 @@ router.post('/reserve/:id', async (req, res) => {
             return res.status(400).json({ error: 'End date must be after start date.' });
         }
 
+        const currentDate = new Date(); // Current date and time
+        currentDate.setMinutes(currentDate.getMinutes() - 1);
+        if ( startDateObj < currentDate) {
+            return res.status(400).json({ error: 'Start date must be from now or the future.' });
+        }
+
         // Check if the item is already reserved for the specified period
         const existingReservation = await Reservation.findOne({
             where: {

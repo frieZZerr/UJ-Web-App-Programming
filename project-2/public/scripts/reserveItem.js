@@ -23,6 +23,13 @@ function reserveItem() {
         return;
     }
 
+    const currentDate = new Date(); // Current date and time
+    currentDate.setMinutes(currentDate.getMinutes() - 1);
+    if ( startDateObj < currentDate) {
+        alert('Start date must be from now or the future.');
+        return;
+    }
+
     // Send a POST request to reserve the item
     fetch(`/reserve/${itemId}`, {
         method: 'POST',
