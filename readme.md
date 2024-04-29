@@ -7,3 +7,5 @@ The `master` branch will be constantly updated after each project has been finis
 ## Projects
 
 - [project_1](https://github.com/frieZZerr/UJ-Web-App-Programming/tree/project_1) - Item Reservation System | `IteMate`
+
+- [project_2](https://github.com/frieZZerr/UJ-Web-App-Programming/tree/project_2) - IteMate | `API`
